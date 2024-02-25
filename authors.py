@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk,messagebox
+from db import get_authors,insert_author,delete_author
 
 def author_setup(root,gotoBooks):
   tree = ttk.Treeview(root,columns=('a','b'))
@@ -9,7 +10,7 @@ def author_setup(root,gotoBooks):
   tree.column('a',width=40,anchor=CENTER)
   tree.column('b',width=100,anchor=CENTER)
   tree.place(x=140,y=20)
-  data = [(1,'ram'),(2,'shyam')]
+  data = get_authors()
   
   for id,name in data:
     tree.insert("",END,values=(id,name))
@@ -25,9 +26,11 @@ def author_setup(root,gotoBooks):
   e2.pack()
   
   def add_item():
-    tree.insert("",END,values=(e1.get(),e2.get()))
-    e1.delete(0,END)
-    e2.delete(0,END)
+    completed = insert_author(e1.get(),e2.get())
+    if completed:
+      tree.insert("",END,values=(e1.get(),e2.get()))
+      e1.delete(0,END)
+      e2.delete(0,END)
   
   b1 = Button(r1,text='Add',command=add_item)
   b1.pack()
@@ -39,7 +42,10 @@ def author_setup(root,gotoBooks):
     else:
       res = messagebox.askyesno('b','Are you sure you want to delete ?')
       if res:
-        tree.delete(selected)
+        values = tree.item(selected,'values')
+        resp = delete_author(values[0])
+        if resp:
+          tree.delete(selected)
   
   b2 = Button(r1,text='Delete',command=delete_item)
   b2.pack()
