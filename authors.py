@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk,messagebox
 from db import get_authors,insert_author,delete_author
 
-def author_setup(root,gotoBooks):
+def author_setup(root,gotoBooks,gotoUpdate):
   tree = ttk.Treeview(root,columns=('a','b'))
   tree['show'] = 'headings'
   tree.heading('a',text='id')
@@ -50,8 +50,16 @@ def author_setup(root,gotoBooks):
   b2 = Button(r1,text='Delete',command=delete_item)
   b2.pack()
   
+  b2 = Button(r1,text='Update',command=lambda:gotoUpdate())
+  b2.pack()
+  
   r1.place(x=10,y=20)
   
   b1 = Button(root,text='Go to Books',command=gotoBooks)
+  b1.pack(side='bottom')
+  
+  
+def author_update_setup(root,data,gotoAuthors):
+  b1 = Button(root,text='Cancel',command=gotoAuthors)
   b1.pack(side='bottom')
   
