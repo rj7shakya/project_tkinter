@@ -2,7 +2,6 @@ from tkinter import *
 from books import book_setup
 from authors import author_setup
 
-
 root = Tk()
 books = Frame(root)
 authors = Frame(root)

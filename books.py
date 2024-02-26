@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk,messagebox
+from db import get_books,insert_book,delete_book
 
 def book_setup(root,gotoAuthor):
   tree = ttk.Treeview(root,columns=('a','b','c'))
@@ -12,7 +13,7 @@ def book_setup(root,gotoAuthor):
   tree.column('c',width=60,anchor=CENTER)  
   tree.place(x=140,y=20)
   
-  data = [(1,'aa','ram'),(2,'bb','shyam')]
+  data = get_books()
   for id,name,author in data:
     tree.insert("",END,values=(id,name,author))
     
@@ -32,25 +33,31 @@ def book_setup(root,gotoAuthor):
   e3 = Entry(r1,width=12)
   e3.pack()
   
-  def insert_book():
-    tree.insert("",END,values=(e1.get(),e2.get(),e2.get()))
-    e1.delete(0,END)
-    e2.delete(0,END)
-    e3.delete(0,END)
+  def insert_item():
+    res = insert_book(e1.get(),e2.get(),e3.get())
+    if res:
+      data = get_books()[-1]
+      tree.insert("",END,values=data)
+      e1.delete(0,END)
+      e2.delete(0,END)
+      e3.delete(0,END)
   
-  b1 = Button(r1,text="Add",command=insert_book)
+  b1 = Button(r1,text="Add",command=insert_item)
   b1.pack()
   
-  def delete_book():
+  def delete_item():
     selected = tree.focus()
     if not selected:
       messagebox.askokcancel('a','no item selected')
     else:
       res = messagebox.askyesno('b','Are you sure you want to delete ?')
       if res:
-        tree.delete(selected)
+        values = tree.item(selected,'values')
+        resp = delete_book(values[0])
+        if resp:
+          tree.delete(selected)
   
-  b2 = Button(r1,text="Delete",command=delete_book)
+  b2 = Button(r1,text="Delete",command=delete_item)
   b2.pack() 
   
   r1.place(x=10,y=20)
